@@ -1,0 +1,36 @@
+{
+  "name": "tomo-idv-client",
+  "version": "0.1.0",
+  "description": "Reusable React component",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Tomoarrow-Inc/tomo-idv-client.git"
+  },
+  "keywords": [
+    "react",
+    "component",
+    "ui",
+    "tomo-idv-client"
+  ],
+  "author": "Chanwoo Lee <chan@tomoarrow.com>",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "rollup": "^4.41.1",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "tslib": "^2.8.1"
+  }
+}
