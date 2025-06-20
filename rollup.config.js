@@ -2,22 +2,28 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import babel from '@rollup/plugin-babel';
 import terser from '@rollup/plugin-terser';
+import typescript from 'rollup-plugin-typescript2';
 import pkg from './package.json' with { type: 'json' };
 
 export default [
   // ESModule 빌드
   {
-    input: 'src/index.js',
+    input: 'src/index.tsx',
     output: {
       file: pkg.module,           // dist/index.esm.js
       format: 'es',
       sourcemap: true
     },
     plugins: [
+      typescript({
+        tsconfig: './tsconfig.json',
+        clean: true
+      }),
       resolve(),
       babel({
         babelHelpers: 'bundled',
-        presets: ['@babel/preset-react'],
+        presets: ['@babel/preset-react', '@babel/preset-typescript'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
         exclude: 'node_modules/**'
       }),
       commonjs(),
@@ -26,17 +32,22 @@ export default [
   },
   // CommonJS 빌드
   {
-    input: 'src/index.js',
+    input: 'src/index.tsx',
     output: {
       file: pkg.main,             // dist/index.cjs.js
       format: 'cjs',
       sourcemap: true
     },
     plugins: [
+      typescript({
+        tsconfig: './tsconfig.json',
+        clean: true
+      }),
       resolve(),
       babel({
         babelHelpers: 'bundled',
-        presets: ['@babel/preset-react'],
+        presets: ['@babel/preset-react', '@babel/preset-typescript'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
         exclude: 'node_modules/**'
       }),
       commonjs(),
