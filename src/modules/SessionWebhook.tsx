@@ -6,9 +6,10 @@ import { config, EnvironmentErrorBoundary } from "./ClientEnv";
 interface SessionWebHookProps {
     children: ( connection_status: ConnectionStatus, 
                 session_id: string | null) => React.ReactNode;
+                onSessionOpened?: (session_id: string) => void;
 }
 
-const SessionWebHook = ({ children }: SessionWebHookProps) => {
+const SessionWebHook = ({ children, onSessionOpened }: SessionWebHookProps) => {
     const [session_id, setSessionId] = useState<string | null>(null);
     const [connection_status, setConnectionStatus] = useState<ConnectionStatus>('disconnected');
 
@@ -38,7 +39,9 @@ const SessionWebHook = ({ children }: SessionWebHookProps) => {
                         break;
                     case 'session.opened':
                         console.log('Session opened:', webhookEvent.data);
-                        setSessionId(webhookEvent.data);
+                        const session_id = webhookEvent.data;
+                        setSessionId(session_id);
+                        onSessionOpened?.(session_id);
                         break;
                     default:
                         console.log('Unknown event type:', webhookEvent.event);
