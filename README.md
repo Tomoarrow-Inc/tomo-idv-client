@@ -47,11 +47,11 @@ function App() {
 
 업데이트 시 바뀔 수 있음 
 
-```tsx
-REACT_APP_WEBHOOK_URL=http://localhost:3000/webhook/session
-REACT_APP_TOMO_IDV_URL=http://localhost:8081/auth/tomo-idv
-REACT_APP_STORE_KYC_ENDPOINT=http://localhost:8080/plaid/store
-REACT_APP_GENERATE_LINK_TOKEN_ENDPOINT=http://localhost:8080/plaid/generate_link_token
+```shell
+REACT_APP_WEBHOOK_URL=http://3.34.173.204:3000/webhook/session
+REACT_APP_TOMO_IDV_URL=http://3.34.173.204:8081/auth/tomo-idv
+REACT_APP_STORE_KYC_ENDPOINT=http://3.34.173.204:8080/plaid/store
+REACT_APP_GENERATE_LINK_TOKEN_ENDPOINT=http://3.34.173.204:8080/plaid/generate_link_token
 ```
 
 ### 인증 및 고객 확인 화면
@@ -102,3 +102,13 @@ export default function TomoIDVClient({ connection_status, session_id }: TomoIDV
   );
 }
 ```
+
+Client 예제 
+  https://github.com/Tomoarrow-Inc/TomoIDVQuickStart
+
+TomoIDV API Document
+  https://web.postman.co/workspace/812c5071-5235-4e35-80ac-57a78f7d5090/documentation/44525910-cea1a591-4484-4a0d-8947-c77eb4b91011
+
+`/verify/session` 을 통해 세션이 유효한지 검증할 수 있습니다. 
+`/results` 를 통해 로그인된 사용자의 고객 확인 정보를 얻어올 수 있습니다.
+  
