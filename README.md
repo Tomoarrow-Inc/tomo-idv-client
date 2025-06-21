@@ -103,12 +103,11 @@ export default function TomoIDVClient({ connection_status, session_id }: TomoIDV
 }
 ```
 
-Client 예제 
-  https://github.com/Tomoarrow-Inc/TomoIDVQuickStart
+### 예제 및 개발 문서 
+- [Client 예제](https://github.com/Tomoarrow-Inc/TomoIDVQuickStart)
+- [TomoIDV API Document](https://documenter.getpostman.com/view/44525910/2sB2xBCpjV)
 
-TomoIDV API Document
-  https://web.postman.co/workspace/812c5071-5235-4e35-80ac-57a78f7d5090/documentation/44525910-cea1a591-4484-4a0d-8947-c77eb4b91011
-
-`/verify/session` 을 통해 세션이 유효한지 검증할 수 있습니다. 
-`/results` 를 통해 로그인된 사용자의 고객 확인 정보를 얻어올 수 있습니다.
+### Server-side API 간략 설명
+- `/verify/session` 을 통해 세션이 유효한지 검증할 수 있습니다. 
+- `/results` 를 통해 로그인된 사용자의 고객 확인 정보를 얻어올 수 있습니다.
   
