@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 interface Config {
     webhookUrl: string;
     tomoIdvUrl: string;
+    tomoIdvAppUrl: string; // 추가된 속성
     storeKycEndpoint: string;
     generateLinkTokenEndpoint: string;
   }
@@ -11,6 +12,7 @@ interface Config {
     const requiredEnvVars = {
       webhookUrl: process.env.REACT_APP_WEBHOOK_URL,
       tomoIdvUrl: process.env.REACT_APP_TOMO_IDV_URL,
+      tomoIdvAppUrl: process.env.REACT_APP_TOMO_IDV_APP_URL,
       storeKycEndpoint: process.env.REACT_APP_STORE_KYC_ENDPOINT,
       generateLinkTokenEndpoint: process.env.REACT_APP_GENERATE_LINK_TOKEN_ENDPOINT,
     };
