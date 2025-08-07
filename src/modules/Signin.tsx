@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { config, EnvironmentErrorBoundary } from "./ClientEnv";
+import React, { useState, useEffect } from 'react';
+import { config, isDevelopment, EnvironmentErrorBoundary } from './ClientEnv';
 import { ConnectionStatus, WebhookEvent } from "./models";
 
 interface SigninProps {
@@ -9,10 +9,10 @@ interface SigninProps {
     setConnectionStatus: (connection_status: ConnectionStatus) => void;
 }
 
-// 환경변수 확인 함수
-const isDevelopment = (): boolean => {
-    return process.env.REACT_APP_ENV === 'development';
-};
+// 환경변수 확인 함수 - ClientEnv에서 import하므로 제거
+// const isDevelopment = (): boolean => {
+//     return process.env.REACT_APP_ENV === 'development';
+// };
 
 
 const Signin = ({ className = '', label = 'Tomo Signin', setConnectionStatus, setSessionId }: SigninProps) => {
