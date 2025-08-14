@@ -1,17 +1,18 @@
-import { useEffect, useState } from "react";
+
 
 interface Config {
     webhookUrl: string;
     tomoIdvUrl: string;
-    tomoIdvAppUrl: string; // 추가된 속성
+    tomoIdvAppUrl: string;
     storeKycEndpoint: string;
+    storeJpKycEndpoint: string;
     generateLinkTokenEndpoint: string;
     verifySessionEndpoint: string;
     resultsEndpoint: string;
     environment: 'development' | 'test' | 'production';
 }
 
-// 환경 감지 함수 개선
+// 환경 감지 함수
 export const getEnvironment = (): 'development' | 'test' | 'production' => {
     const env = process.env.REACT_APP_ENV?.toLowerCase();
     
@@ -42,82 +43,86 @@ const getEnvironmentConfig = (): Config => {
     switch (environment) {
         case 'development':
             return {
-                // NOTE : port 80 이 idv-server
-                webhookUrl: 'http://localhost:80/webhook/session',
-                tomoIdvUrl: 'http://localhost:8080/auth/tomo-idv',
-                tomoIdvAppUrl: 'http://localhost:8080/idv',
-                storeKycEndpoint: 'http://localhost:80/us/store',
-                generateLinkTokenEndpoint: 'http://localhost:80/us/generate_link_token',
-                verifySessionEndpoint: 'http://localhost:80/verify/session',
-                resultsEndpoint: 'http://localhost:80/results',
-                environment: 'development'
+                webhookUrl: 'https://test.tomopayment.com/v1/webhook/session',
+                tomoIdvUrl: 'https://app-test.tomopayment.com/auth/tomo-idv',
+                tomoIdvAppUrl: 'https://app-test.tomopayment.com/idv',
+                storeKycEndpoint: 'https://test.tomopayment.com/v1/us/store',
+                storeJpKycEndpoint: 'https://test.tomopayment.com/v1/jp/store',
+                generateLinkTokenEndpoint: 'https://test.tomopayment.com/v1/us/generate_link_token',
+                verifySessionEndpoint: 'https://test.tomopayment.com/v1/verify/session',
+                resultsEndpoint: 'https://test.tomopayment.com/v1/results',
+                environment: 'test'
             };
             
         case 'test':
             return {
-                webhookUrl: 'https://test.tomopayment.com/webhook/session',
+                webhookUrl: 'https://test.tomopayment.com/v1/webhook/session',
                 tomoIdvUrl: 'https://app-test.tomopayment.com/auth/tomo-idv',
                 tomoIdvAppUrl: 'https://app-test.tomopayment.com/idv',
-                storeKycEndpoint: 'https://test.tomopayment.com/us/store',
-                generateLinkTokenEndpoint: 'https://test.tomopayment.com/us/generate_link_token',
-                verifySessionEndpoint: 'https://test.tomopayment.com/verify/session',
-                resultsEndpoint: 'https://test.tomopayment.com/results',
+                storeKycEndpoint: 'https://test.tomopayment.com/v1/us/store',
+                storeJpKycEndpoint: 'https://test.tomopayment.com/v1/jp/store',
+                generateLinkTokenEndpoint: 'https://test.tomopayment.com/v1/us/generate_link_token',
+                verifySessionEndpoint: 'https://test.tomopayment.com/v1/verify/session',
+                resultsEndpoint: 'https://test.tomopayment.com/v1/results',
                 environment: 'test'
             };
             
         case 'production':
-            // tomoIdvUrl, tomoIdvAppUrl 을 prod CF 도메인으로 바꿔야함. (CF도 만들어야함)
             return {
-                webhookUrl: 'https://api.tomopayment.com/webhook/session',
-                tomoIdvUrl: 'https://app-test.tomopayment.com/auth/tomo-idv',
-                tomoIdvAppUrl: 'https://app-test.tomopayment.com/idv',
-                storeKycEndpoint: 'https://api.tomopayment.com/us/store',
-                generateLinkTokenEndpoint: 'https://api.tomopayment.com/us/generate_link_token',
-                verifySessionEndpoint: 'https://api.tomopayment.com/verify/session',
-                resultsEndpoint: 'https://api.tomopayment.com/results',
+                webhookUrl: 'https://api.tomopayment.com/v1/webhook/session',
+                tomoIdvUrl: 'https://app.tomopayment.com/auth/tomo-idv',
+                tomoIdvAppUrl: 'https://app.tomopayment.com/idv',
+                storeKycEndpoint: 'https://api.tomopayment.com/v1/us/store',
+                storeJpKycEndpoint: 'https://api.tomopayment.com/v1/jp/store',
+                generateLinkTokenEndpoint: 'https://api.tomopayment.com/v1/us/generate_link_token',             
+                verifySessionEndpoint: 'https://api.tomopayment.com/v1/verify/session',
+                resultsEndpoint: 'https://api.tomopayment.com/v1/results',
                 environment: 'production'
             };
     }
 };
 
 const validateEnvironmentVariables = (): Config => {
-    // 모든 환경이 내부 설정을 사용하므로 환경 변수 검증 불필요
     return getEnvironmentConfig();
 };
 
 export const config = validateEnvironmentVariables();
 
-// React 앱에서 환경변수 에러를 표시할 컴포넌트
-export const EnvironmentErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [error, setError] = useState<Error | null>(null);
-
-    useEffect(() => {
-        try {
-            validateEnvironmentVariables();
-        } catch (e) {
-            setError(e instanceof Error ? e : new Error('Configuration error'));
-        }
-    }, []);
-
-    if (error) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-red-50">
-                <div className="max-w-md p-8 bg-white rounded-lg shadow-lg">
-                    <h1 className="text-2xl font-bold text-red-600 mb-4">
-                        Configuration Error
-                    </h1>
-                    <div className="bg-red-100 border-l-4 border-red-500 p-4">
-                        <p className="text-red-700 whitespace-pre-wrap font-mono text-sm">
-                            {error.message}
-                        </p>
-                    </div>
-                    <p className="mt-4 text-gray-600">
-                        Please check your environment configuration and restart the application.
-                    </p>
-                </div>
-            </div>
-        );
+// 환경 검증 함수
+export const validateEnvironment = (): { isValid: boolean; error?: Error } => {
+    try {
+        validateEnvironmentVariables();
+        return { isValid: true };
+    } catch (e) {
+        const error = e instanceof Error ? e : new Error('Configuration error');
+        return { isValid: false, error };
     }
+};
 
-    return <>{children}</>;
+// 환경 에러 처리 함수
+export const handleEnvironmentError = (error: Error): void => {
+    console.error('Environment configuration error:', error);
+    
+    // 개발 환경에서는 더 자세한 에러 정보를 제공
+    if (isDevelopment()) {
+        console.error('Environment validation failed. Please check your configuration.');
+        console.error('Error details:', error.message);
+    }
+    
+    // 프로덕션 환경에서는 사용자 친화적인 메시지만 표시
+    if (isProduction()) {
+        console.error('Application configuration error. Please contact support.');
+    }
+};
+
+// 환경 초기화 함수
+export const initializeEnvironment = (): boolean => {
+    const { isValid, error } = validateEnvironment();
+    
+    if (!isValid && error) {
+        handleEnvironmentError(error);
+        return false;
+    }
+    
+    return true;
 };
