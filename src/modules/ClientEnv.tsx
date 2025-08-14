@@ -1,6 +1,6 @@
 
 
-interface Config {
+export interface Config {
     webhookUrl: string;
     tomoIdvUrl: string;
     tomoIdvAppUrl: string;
