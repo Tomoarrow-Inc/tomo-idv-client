@@ -1,120 +1,112 @@
-### 제공되는 Components
+# TomoIDV Client Deverloper Guide
 
-- `tomo-idv-client` 패키지에서는 아래 4개의 컴포넌트와 `ConnectionStatus` 타입을 export 합니다.
+TomoIDV는 해외 고객의 신분증(ID)를 검증(Verification)하는 서비스입니다. 크게 OAuth 2.0 인증과 IDV 서비스로 이루어져있으며, OAuth 2.0 인증이 된 회원만 IDV를 수행할 수 있습니다.
 
-```tsx
-export {
-    type ConnectionStatus,
-    StartTomoIDV,
-    WebhookStatus,
-    SessionWebHook,
-    Signin
-};
+## 🚀 설치 및 설정
+
+### 1. 패키지 설치
+
+```bash
+# npm을 사용하는 경우
+npm install tomo-idv-client
+
+# yarn을 사용하는 경우
+yarn add tomo-idv-client
 ```
 
-### Session Webhook Component
+### 2. 기본 import
 
-- SessionWebHook에서 서버로부터 `session_id` 를 수신합니다.
-- `session_id` 를 `webhookHelper` 함수 파라메터를 통해 사용자 컴포넌트에 전달할 수 있습니다.
+```typescript
+import { ConnectionStatus, TomoIDV } from 'tomo-idv-client';
+// type ConnectionStatus = 'connecting' | 'connected' | 'disconnected';
+```
 
-```tsx
+## 🔄 서비스 구조
 
-function App() {
+### 가맹사 사이트에서 OAuth Sign in, IDV Service
 
-  function webhookHelper(connection_status: ConnectionStatus, session_id: string | null) {
-    return (
-      <TomoIDVClient connection_status={connection_status} session_id={session_id} />
-    )
-  }
+가맹사 사이트에서 TomoIDV 서비스에 OAuth Sign In시 session_id가 발급됩니다. 이 session_id를 IDV Service에 전달하여 신분증 인증(IDV)를 수행할 수 있습니다.
+
+```
+
+┌─────────────┐      Webhook    ┌─────────────┐      session_id    ┌─────────────┐
+│    OAuth    │ ◄────────────── │   Merchant  │ ─────────────────► │     IDV     │
+│   Sign In   │ ──────────────► │     Site    │ ◄───────────────── │   Service   │
+└─────────────┘    session_id   └─────────────┘    verified: y/n   └─────────────┘
+
+```
+
+### 구현
+
+#### 1단계: Google OAuth 인증
+
+`TomoIDV.useTomoAuth` Hook을 사용하여 `establishConnection()` 함수를 얻을 수 있습니다. 이 함수를 이용해 Webhook 연결 하고, Sign in이 끝나면 `onSessionIdChange`에서`session_id`를 얻어올 수 있습니다. Webhook 연결 상태를 확인하려면 `onConnectionStatusChange`를 이용할 수 있습니다.
+
+```typescript
+
+export default function TomoIDVClient() {
+
+  const [session_id, setSessionId] = useState<string | null>(null);
+  const [connection_status, setConnectionStatus] = useState<ConnectionStatus>('disconnected');
+
+  const { establishConnection } = TomoIDV.useTomoAuth({
+    onConnectionStatusChange: setConnectionStatus,
+    onSessionIdChange: setSessionId
+  });
+
+  const handleLogin = async () => {
+    await establishConnection();
+  };
+
+  ...
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <div className="flex space-x-4 items-center">
-          <div>
-            <SessionWebHook >
-              { webhookHelper }
-            </SessionWebHook>
-          </div>
-        </div>
-      </header>
-    </div>
-  );
-}
-```
-
-### Environment Variable setup
-
-업데이트 시 바뀔 수 있음 
-
-```shell
-REACT_APP_WEBHOOK_URL=https://test.tomopayment.com:3000/webhook/session
-REACT_APP_TOMO_IDV_URL=http://test.tomopayment.com:8081/auth/tomo-idv
-REACT_APP_TOMO_IDV_APP_URL=http://test.tomopayment.com:8081/idv
-REACT_APP_STORE_KYC_ENDPOINT=https://test.tomopayment.com/plaid/store
-REACT_APP_GENERATE_LINK_TOKEN_ENDPOINT=https://test.tomopayment.com/plaid/generate_link_token
-
-
-REACT_APP_API_VERFY_SESSION=https://test.tomopayment.com:3000/verify/session
-REACT_APP_API_GET_KYC=https://test.tomopayment.com:3000/results
-
-WDS_SOCKET_PORT=3001
-```
-
-### 인증 및 고객 확인 화면
-
-- `Signin`: 구글 로그인을 이용한 인증 및 `session_id` 발급
-- `WebhookStatus`: 현재 webhook 연결상태 및 session_id 상태 확인
-- `StartTomoIDV`: 고객 확인 절차 시작 (반드시 `session_id` 가 유효해야 진행 가능)
-
-```tsx
-	
-interface TomoIDVClientProps { 
-  connection_status: ConnectionStatus;
-  session_id: string | null;
+    <button onClick={handleLogin}>
+      'Login with TomoIDV'
+    </button>
+  )
 }
 
-export default function TomoIDVClient({ connection_status, session_id }: TomoIDVClientProps) {
+```
+
+#### 2단계: 신분증 검증(Identity Verification)
+
+`TomoIDV.useTomoIDV()` hook을 통해 `openTomoIDVPopup()` 함수를 얻을 수 있습니다. OAuth Sing in을 통해 얻은 `seession_id`를 이용하여 IDV를 시작할 수 있습니다. IDV를 위한 팝업창이 뜨고, 사용자는 국가별 IDV 절차를 진행하게 됩니다.
+
+```typescript
+import { ConnectionStatus, TomoIDV } from 'tomo-idv-client';
+
+export default function TomoIDVClient() {
+  const [session_id, setSessionId] = useState<string | null>(null);
+  const { openTomoIDVPopup } = TomoIDV.useTomoIDV();
+
+  const handleStartIDV = async () => {
+    openTomoIDVPopup(session_id);
+  };
+
+  ... 
+
   return (
-    <div className="max-w-3xl mx-auto p-6 space-y-8">
-      
-      {/* Step 1: Login */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <Signin
-          className="w-full py-2.5 px-4 text-sm font-semibold tracking-wider rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition duration-150"
-          label='로그인'
-        />
-      </div>
-
-      {/* Step 2: Session Info and Monitor */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <div className="bg-gray-50 p-4 rounded">
-          <WebhookStatus session_id={session_id} connectionStatus={connection_status} />
-        </div>
-      </div>
-
-      {/* Step 3: IDV Process */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <StartTomoIDV
-          session_id={session_id}
-          className={`w-full py-2.5 px-4 text-sm font-semibold tracking-wider rounded text-white transition duration-150 ${
-            session_id 
-              ? 'bg-green-600 hover:bg-green-700 cursor-pointer' 
-              : 'bg-gray-400 cursor-not-allowed'
-          }`}
-          label='고객 확인 시작'
-        />
-      </div>
-    </div>
-  );
+    <button onClick={handleStartIDV}>
+      Start Identity Verification
+    </button>
+  )
 }
 ```
 
-### 예제 및 개발 문서 
-- [Client 예제](https://github.com/Tomoarrow-Inc/TomoIDVQuickStart)
-- [TomoIDV API Document](https://documenter.getpostman.com/view/44525910/2sB2xBCpjV)
+#### 3단계: 인증/검증 여부 확인
 
-### Server-side API 간략 설명
-- `/verify/session` 을 통해 세션이 유효한지 검증할 수 있습니다. 
-- `/results` 를 통해 로그인된 사용자의 고객 확인 정보를 얻어올 수 있습니다.
-  
+사용자의 접근제한을 위해 `session_id` 유효성 검사와 사용자의 IDV 수행 여부를 검사할 수 있습니다.
+
+사용 가능한 국가 코드(`<country_code>`)는 `jp, us, uk, ca`(일본, 미국, 영국, 캐나다) 입니다.
+
+Base url: `https://test.tomopayment.com/v1`
+
+* `POST /verify/session`: 로그인된 사용자의 Session이 유효한지 검사 (만료: 생성 후 1h)
+
+  * Request Body Type: `{ session_id: string }`
+  * Response Body Type: `{ verified: bool }`
+* `POST /<country_code>/verify/kyc`: 로그인된 사용자가 IDV 인증을 성공적으로 수행했는지 여부 검사
+
+  * Request Body Type: `{ session_id: string }`
+  * Response Body Type: `{ verified: bool }`
