@@ -48,10 +48,17 @@ function App() {
 업데이트 시 바뀔 수 있음 
 
 ```shell
-REACT_APP_WEBHOOK_URL=http://13.124.197.232:3000/webhook/session
-REACT_APP_TOMO_IDV_URL=http://13.124.197.232:8081/auth/tomo-idv
-REACT_APP_STORE_KYC_ENDPOINT=http://13.124.197.232:8080/plaid/store
-REACT_APP_GENERATE_LINK_TOKEN_ENDPOINT=http://13.124.197.232:8080/plaid/generate_link_token
+REACT_APP_WEBHOOK_URL=https://test.tomopayment.com:3000/webhook/session
+REACT_APP_TOMO_IDV_URL=http://test.tomopayment.com:8081/auth/tomo-idv
+REACT_APP_TOMO_IDV_APP_URL=http://test.tomopayment.com:8081/idv
+REACT_APP_STORE_KYC_ENDPOINT=https://test.tomopayment.com/plaid/store
+REACT_APP_GENERATE_LINK_TOKEN_ENDPOINT=https://test.tomopayment.com/plaid/generate_link_token
+
+
+REACT_APP_API_VERFY_SESSION=https://test.tomopayment.com:3000/verify/session
+REACT_APP_API_GET_KYC=https://test.tomopayment.com:3000/results
+
+WDS_SOCKET_PORT=3001
 ```
 
 ### 인증 및 고객 확인 화면
