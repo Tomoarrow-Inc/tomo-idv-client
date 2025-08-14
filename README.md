@@ -103,10 +103,93 @@ export default function TomoIDVClient() {
 Base url: `https://test.tomopayment.com/v1`
 
 * `POST /verify/session`: 로그인된 사용자의 Session이 유효한지 검사 (만료: 생성 후 1h)
-
   * Request Body Type: `{ session_id: string }`
   * Response Body Type: `{ verified: bool }`
+
 * `POST /<country_code>/verify/kyc`: 로그인된 사용자가 IDV 인증을 성공적으로 수행했는지 여부 검사
-
   * Request Body Type: `{ session_id: string }`
   * Response Body Type: `{ verified: bool }`
+
+
+```typescript
+// 세션 유효성 검사
+fetch('https://test.tomopayment.com/v1/verify/session', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ session_id })
+  })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+
+// 일본 국적 KYC 성공 여부 검사
+fetch('https://test.tomopayment.com/v1/jp/verify/kyc', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ session_id })
+  })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+
+
+// 미국 국적 KYC 성공 여부 검사
+fetch('https://test.tomopayment.com/v1/us/verify/kyc', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ session_id })
+  })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+
+// 영국 국적 KYC 성공 여부 검사
+fetch('https://test.tomopayment.com/v1/uk/verify/kyc', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ session_id })
+  })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+
+// 캐나다 국적 KYC 성공 여부 검사
+fetch('https://test.tomopayment.com/v1/ca/verify/kyc', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ session_id })
+  })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+```
