@@ -1,8 +1,6 @@
 // TomoIDV 모듈 - 모든 TomoIDV 관련 훅들을 네임스페이스로 제공
 import { useWebhookConnection } from './hooks/useWebhookConnection';
 import { usePopup, UsePopupReturn } from './hooks/usePopup';
-import { verifySession } from './services/verifySession';
-import { getResult } from './services/getResult';
 
 // TomoIDV 네임스페이스 객체
 export const TomoIDV = {
@@ -10,9 +8,6 @@ export const TomoIDV = {
   useTomoAuth: useWebhookConnection,
   // 팝업 관련 훅
   useTomoIDV: usePopup,
-  // 서비스 함수들
-  verifySession,
-  getResult,
 } as const;
 
 // 기본 export로 TomoIDV 객체 제공
