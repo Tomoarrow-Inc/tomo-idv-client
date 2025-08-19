@@ -3,8 +3,14 @@
   "version": "0.1.23",
   "description": "Reusable React component",
   "type": "module",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
@@ -25,22 +31,8 @@
   "author": "Chanwoo Lee <chan@tomoarrow.com>",
   "license": "MIT",
   "peerDependencies": {
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.3.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.126",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-scripts": "5.0.1",
-    "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4",
-    "react-plaid-link": "^3.6.1",
-    "plaid": "^30.0.0",
-    "@react-oauth/google": "^0.12.1"
+    "react": ">=18",
+    "react-dom": ">=18"
   },
   "files": [
     "dist",
@@ -68,6 +60,14 @@
     "rollup": "^4.41.1",
     "rollup-plugin-typescript2": "^0.36.0",
     "ts-jest": "^29.3.4",
-    "tslib": "^2.8.1"
-  }
+    "tslib": "^2.8.1",
+    "@testing-library/dom": "^10.4.0",
+    "@types/node": "^16.18.126",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "typescript": "^4.9.5",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "publishConfig": { "access": "public" }
 }
