@@ -1,6 +1,6 @@
 {
   "name": "tomo-idv-client",
-  "version": "0.1.23",
+  "version": "0.1.23-next.1",
   "description": "Reusable React component",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -69,5 +69,7 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
-  "publishConfig": { "access": "public" }
+  "publishConfig": {
+    "access": "public"
+  }
 }
