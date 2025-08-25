@@ -10,29 +10,17 @@ export interface Config {
     environment: 'development' | 'test' | 'production';
 }
 
-// 환경 감지 함수
-export const getEnvironment = (): 'development' | 'test' | 'production' => {
-    const env = process.env.REACT_APP_ENV?.toLowerCase();
-    
-    if (env === 'development' || env === 'dev') return 'development';
-    if (env === 'test') return 'test';
-    
-    // REACT_APP_ENV가 없거나 다른 값이면 test로 처리
-    // production 환경은 quick start에서 제공해주지 않음
-    return 'test';
-};
-
 // 기존 isDevelopment 함수와 호환성을 위한 함수들
 export const isDevelopment = (): boolean => {
-    return getEnvironment() === 'development';
+    return false;
 };
 
 export const isTest = (): boolean => {
-    return getEnvironment() === 'test';
+    return true;
 };
 
 export const isProduction = (): boolean => {
-    return getEnvironment() === 'production';
+    return false;
 };
 
 // 환경별 설정 관리
