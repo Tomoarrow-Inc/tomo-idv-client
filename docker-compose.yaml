@@ -1,0 +1,15 @@
+
+
+services:
+  tomo-idv-client:
+    image: node:20-alpine
+
+    volumes:
+      - ./:/app
+
+    working_dir: /app
+
+    tty: true 
+    stdin_open: true
+
+    command: sh

@@ -5,6 +5,10 @@ import terser from '@rollup/plugin-terser';
 import typescript from 'rollup-plugin-typescript2';
 import pkg from './package.json' with { type: 'json' };
 
+// 빌드 시점에 환경 결정 (명령행 인수로)
+const args = process.argv.slice(2);
+const isTestBuild = args.includes('--test') || args.includes('--env=test');
+
 export default [
   // ESModule 빌드
   {
@@ -29,7 +33,12 @@ export default [
       }),
       commonjs(),
     ],
-    external: ['react', 'react-dom']
+    external: ['react', 'react-dom'],
+    // 환경 변수 주입 (process.env 사용하지 않음)
+    define: {
+      '__IS_TEST__': JSON.stringify(isTestBuild),
+      'process.env': '{}'
+    }
   },
   // CommonJS 빌드
   {
@@ -55,6 +64,11 @@ export default [
       commonjs(),
       terser()                    // 최소화(옵션)
     ],
-    external: ['react', 'react-dom']
+    external: ['react', 'react-dom'],
+    // 환경 변수 주입 (process.env 사용하지 않음)
+    define: {
+      '__IS_TEST__': JSON.stringify(isTestBuild),
+      'process.env': '{}'
+    }
   }
 ];

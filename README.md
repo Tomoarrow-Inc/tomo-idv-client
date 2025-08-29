@@ -1,4 +1,4 @@
-# TomoIDV Client Deverloper Guide
+# TomoIDV Client Developer Guide
 
 TomoIDV는 해외 고객의 신분증(ID)를 검증(Verification)하는 서비스입니다. 크게 OAuth 2.0 인증과 IDV 서비스로 이루어져있으며, OAuth 2.0 인증이 된 회원만 IDV를 수행할 수 있습니다.
 
@@ -6,12 +6,22 @@ TomoIDV는 해외 고객의 신분증(ID)를 검증(Verification)하는 서비�
 
 ### 1. 패키지 설치
 
+#### Test 환경 (개발/테스트용)
 ```bash
 # npm을 사용하는 경우
-npm install tomo-idv-client
+npm install tomo-idv-client@test
 
 # yarn을 사용하는 경우
-yarn add tomo-idv-client
+yarn add tomo-idv-client@test
+```
+
+#### Production 환경 (운영용)
+```bash
+# npm을 사용하는 경우
+npm install tomo-idv-client@latest
+
+# yarn을 사용하는 경우
+yarn add tomo-idv-client@latest
 ```
 
 ### 2. 기본 import
@@ -28,13 +38,25 @@ import { ConnectionStatus, TomoIDV } from 'tomo-idv-client';
 가맹사 사이트에서 TomoIDV 서비스에 OAuth Sign In시 session_id가 발급됩니다. 이 session_id를 IDV Service에 전달하여 신분증 인증(IDV)를 수행할 수 있습니다.
 
 ```
-
 ┌─────────────┐      Webhook    ┌─────────────┐      session_id    ┌─────────────┐
 │    OAuth    │ ◄────────────── │   Merchant  │ ─────────────────► │     IDV     │
 │   Sign In   │ ──────────────► │     Site    │ ◄───────────────── │   Service   │
 └─────────────┘    session_id   └─────────────┘    verified: y/n   └─────────────┘
-
 ```
+
+## 🏷️ 태그 기반 환경 관리
+
+이 패키지는 태그 기반으로 환경을 구분합니다:
+
+- **`@test`**: Test 환경 (개발/테스트용)
+  - URL: `https://test.tomopayment.com`
+  - App URL: `https://app-test.tomopayment.com`
+  
+- **`@latest`**: Production 환경 (운영용)
+  - URL: `https://api.tomopayment.com`
+  - App URL: `https://app.tomopayment.com`
+
+환경은 설치 시점에 자동으로 결정되며, 별도의 환경변수 설정이 필요하지 않습니다.
 
 ### 구현
 
@@ -100,7 +122,7 @@ export default function TomoIDVClient() {
 
 사용 가능한 국가 코드(`<country_code>`)는 `jp, us, uk, ca`(일본, 미국, 영국, 캐나다) 입니다.
 
-Base url: `https://test.tomopayment.com/v1`
+Base url: `https://test.tomopayment.com/v1` (Test) / `https://api.tomopayment.com/v1` (Production)
 
 * `POST /verify/session`: 로그인된 사용자의 Session이 유효한지 검사 (만료: 생성 후 1h)
   * Request Body Type: `{ session_id: string }`

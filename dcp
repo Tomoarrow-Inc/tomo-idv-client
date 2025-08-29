@@ -1,0 +1,16 @@
+#!/bin/bash
+
+dcp() {
+    if [ "$1" = "prod" ]; then
+        # Production mode: docker compose
+        shift
+        docker compose --profile prod "$@"
+    elif [ "$1" = "test" ]; then
+        # Development mode: docker compose -f docker-compose-dev.yaml
+        shift
+        docker compose --profile test "$@"
+    else
+        # Production mode: docker compose
+        docker compose --profile test "$@"
+    fi
+}
