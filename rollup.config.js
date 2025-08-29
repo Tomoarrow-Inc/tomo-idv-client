@@ -3,6 +3,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import babel from '@rollup/plugin-babel';
 import terser from '@rollup/plugin-terser';
 import typescript from 'rollup-plugin-typescript2';
+import replace from '@rollup/plugin-replace';
 import pkg from './package.json' with { type: 'json' };
 
 // 빌드 시점에 환경 결정 (명령행 인수로)
@@ -19,6 +20,10 @@ export default [
       sourcemap: true
     },
     plugins: [
+      replace({
+        preventAssignment: true,
+        __IS_TEST__: JSON.stringify(isTestBuild)
+      }),
       typescript({
         tsconfig: './tsconfig.json',
         clean: true,
@@ -33,12 +38,7 @@ export default [
       }),
       commonjs(),
     ],
-    external: ['react', 'react-dom'],
-    // 환경 변수 주입 (process.env 사용하지 않음)
-    define: {
-      '__IS_TEST__': JSON.stringify(isTestBuild),
-      'process.env': '{}'
-    }
+    external: ['react', 'react-dom']
   },
   // CommonJS 빌드
   {
@@ -49,6 +49,10 @@ export default [
       sourcemap: true
     },
     plugins: [
+      replace({
+        preventAssignment: true,
+        __IS_TEST__: JSON.stringify(isTestBuild)
+      }),
       typescript({
         tsconfig: './tsconfig.json',
         clean: true,
@@ -64,11 +68,6 @@ export default [
       commonjs(),
       terser()                    // 최소화(옵션)
     ],
-    external: ['react', 'react-dom'],
-    // 환경 변수 주입 (process.env 사용하지 않음)
-    define: {
-      '__IS_TEST__': JSON.stringify(isTestBuild),
-      'process.env': '{}'
-    }
+    external: ['react', 'react-dom']
   }
 ];
