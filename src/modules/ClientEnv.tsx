@@ -34,11 +34,11 @@ export const isDevelopment = (): boolean => {
 };
 
 export const isTest = (): boolean => {
-    return true;
+    return getEnvironment() === 'test';
 };
 
 export const isProduction = (): boolean => {
-    return false;
+    return getEnvironment() === 'production';
 };
 
 // 환경별 설정 관리
