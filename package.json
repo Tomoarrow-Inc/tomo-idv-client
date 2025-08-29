@@ -1,6 +1,6 @@
 {
   "name": "tomo-idv-client",
-  "version": "0.2.2",
+  "version": "0.2.0",
   "description": "Reusable React component",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -22,8 +22,8 @@
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "format": "prettier --write 'src/**/*.{ts,tsx,js,jsx,json,md}'",
     "test": "jest",
-    "publish:next": "npm run build && npm version prerelease --preid=next && npm publish --tag next",
-    "publish:test": "npm run build:test && npm version prerelease --preid=test && npm publish --tag test",
+    "publish:next": "npm run build && npm version prepatch --preid=next && npm publish --tag next",
+    "publish:test": "npm run build:test && npm version prepatch --preid=test && npm publish --tag test",
     "publish:prod": "npm run build && npm version patch && npm publish"
   },
   "keywords": [
